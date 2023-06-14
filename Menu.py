@@ -8,8 +8,8 @@ BUTTON_OFFSET = 20
 
 
 class NewGame(arcade.gui.UIFlatButton):
-    def on_click(self, event: UIOnClickEvent):
-        game = Game()
+    def on_click(self, event: arcade.gui.UIOnClickEvent):
+        game = Game(self.width, self.height, self.title)
         game.start()
 
 class ExitButton(arcade.gui.UIFlatButton):
