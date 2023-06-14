@@ -1,13 +1,16 @@
-from Menu import *
+import arcade
+from Menu import Menu
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1200
+SCREEN_HEIGHT = 800
 SCREEN_TITLE = "193530 Łukasz Walczak"
 
 
-
 def main():
-    game = Game(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE,resizable=True)
+    arcade.set_window(window)
+    main_view = Menu()
+    window.show_view(main_view)
     arcade.run()
 
 
