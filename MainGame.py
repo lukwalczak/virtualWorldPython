@@ -2,6 +2,7 @@ import arcade
 import arcade.gui
 from Organism import Organism
 from Human import Human
+from Animal import Animal
 
 BUTTON_WIDTH = 250
 BUTTON_HEIGHT = 40
@@ -23,6 +24,14 @@ default_game_point_style = {
             "font_color_pressed": (139, 97, 38),
             "bg_color_hover": (237, 77, 110)
         }
+
+
+class DeathView(arcade.View):
+    def __init__(self, menu_view):
+        super().__init__()
+        arcade.exit()
+        self.manager = arcade.gui.UIManager()
+
 
 
 class GameView(arcade.View):
@@ -105,22 +114,18 @@ class GameView(arcade.View):
     def get_game_point_at_xy(self,x,y):
         return self.game_points[self.game_height*y+x]
 
-    def change_char_game_point_at_xy(self,x,y,char):
+    def change_char_game_point_at_xy(self, x, y, char):
         self.game_points[self.game_height*y+x].set_char(char)
 
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.LEFT:
             self.game.move_human(-1, 0)
-            print("move left")
         elif symbol == arcade.key.RIGHT:
             self.game.move_human(1, 0)
-            print("move right")
         elif symbol == arcade.key.UP:
             self.game.move_human(0, 1)
-            print("move up")
         elif symbol == arcade.key.DOWN:
             self.game.move_human(0, -1)
-            print("move down")
 
 
 class GamePoint(arcade.gui.UIFlatButton):
@@ -153,6 +158,9 @@ class Game:
         self.human = Human(self, self.game_view)
         self.organisms.append(self.human)
         self.generate_organisms()
+        self.do_first_half_turn()
+        sheep = Animal(2, 1, 5, 5, 0, 'S', "Sheep", self, self.game_view)
+        self.organisms.append(sheep)
 
     def generate_organisms(self):
         pass
@@ -163,10 +171,51 @@ class Game:
         self.human.draw()
 
     def move_human(self, dx, dy):
+        self.is_human_alive()
         self.human.action(dx, dy)
+        self.is_human_alive()
+        self.do_second_half_turn()
+        self.sort_organisms()
+        self.do_first_half_turn()
 
-    def get_organism_at_xy(self, x, y):
+    def sort_organisms(self):
+        pass
+
+    def is_organism_at_xy(self, x, y):
         for o in self.organisms:
             if o.pos_x == x and o.pos_y == y:
                 return True
         return False
+
+    def get_organism_at_xy(self, x, y):
+        for o in self.organisms:
+            if o.pos_x == x and o.pos_y == y:
+                return o
+        return None
+
+    def do_first_half_turn(self):
+        for o in self.organisms:
+            if isinstance(o, Human):
+                continue
+            if o.initiative > self.human.initiative or (o.initiative == self.human.initiative and o.age >= self.human.age):
+                continue
+                #o.action(0, 0)
+
+    def do_second_half_turn(self):
+        for o in self.organisms:
+            if isinstance(o, Human):
+                continue
+            if o.initiative <= self.human.initiative:
+                continue
+                #o.action(0, 0)
+
+    def remove_organism(self, organism):
+        for o in self.organisms:
+            if o == organism:
+                self.organisms.remove(organism)
+                break
+
+    def is_human_alive(self):
+        if not self.human.alive:
+            death_view = DeathView(self.game_view.menu_view)
+            self.game_view.window.show_view(death_view)
