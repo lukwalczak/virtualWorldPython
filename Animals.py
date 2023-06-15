@@ -120,6 +120,8 @@ class CyberSheep(Animal):
                 dy = 1
         if not self.game.get_organism_at_xy(self.pos_x + dx, self.pos_y + dy):
             self.move(dx, dy)
+        elif self.game.get_organism_at_xy(self.pos_x + dx, self.pos_y + dy).organism_char == "C":
+            self.breed()
         elif self.collision(self.game.get_organism_at_xy(self.pos_x + dx, self.pos_y + dy)):
             self.move(dx, dy)
         return
