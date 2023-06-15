@@ -14,5 +14,5 @@ class Plant(Organism):
                     self.game.generate_organism_at_xy((self.pos_x + i), self.pos_y, self.organism_name)
                     return
                 if self.game.get_organism_at_xy(self.pos_x, self.pos_y + i) is None and self.check_move(0, i):
-                    self.game.generate_organism_at_xy((self.pos_x + i), self.pos_y, self.organism_name)
+                    self.game.generate_organism_at_xy((self.pos_x), self.pos_y + i, self.organism_name)
                     return

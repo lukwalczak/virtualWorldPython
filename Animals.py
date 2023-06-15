@@ -97,3 +97,37 @@ class CyberSheep(Animal):
         super().__init__(conf.CYBERSHEEPSTR, conf.CYBERSHEEPINITIATIVE, x, y, 0, conf.CYBERSHEEPCHAR, conf.CYBERSHEEPFULLNAME, game,
                          game_view)
 
+    def action(self, dx, dy):
+        closest = None
+        closest_dist = float('inf')
+        for o in self.game.organisms:
+            if o.organism_name == "PINEBORSCH":
+                distance = abs(o.pos_x - self.pos_x) + abs(o.pos_y - self.pos_y)
+                if distance < closest_dist:
+                    closest = o
+                    closest_dist = distance
+
+        if closest is None:
+            super().action(0, 0)
+        else:
+            if self.pos_x > closest.pos_x:
+                dx = -1
+            elif self.pos_x < closest.pos_x:
+                dx = 1
+            elif self.pos_y > closest.pos_y:
+                dy = -1
+            elif self.pos_y < closest.pos_y:
+                dy = 1
+        if not self.game.get_organism_at_xy(self.pos_x + dx, self.pos_y + dy):
+            self.move(dx, dy)
+        elif self.collision(self.game.get_organism_at_xy(self.pos_x + dx, self.pos_y + dy)):
+            self.move(dx, dy)
+        return
+
+    def fight(self, colliding_organism):
+        if colliding_organism.organism_char == "P":
+            self.add_fight_log(colliding_organism, True)
+            self.game.remove_organism(colliding_organism)
+            return True
+        else:
+            super().fight(colliding_organism)

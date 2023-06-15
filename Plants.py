@@ -1,6 +1,7 @@
 from Plant import Plant
 import conf
 from Animal import Animal
+from Animals import CyberSheep
 from Human import Human
 
 
@@ -48,6 +49,8 @@ class Pineborsch(Plant):
     def collision(self, colliding_organism):
         if isinstance(colliding_organism, Human) and colliding_organism.ability_last_time > 0:
             return True
+        if isinstance(colliding_organism, CyberSheep):
+            return False
         self.game.remove_organism(colliding_organism)
         self.game.remove_organism(self)
         return False
@@ -58,12 +61,16 @@ class Pineborsch(Plant):
             if organism is not None:
                 if isinstance(organism, Human) and organism.ability_last_time > 0:
                     continue
+                if isinstance(organism, CyberSheep):
+                    continue
                 self.game.remove_organism(organism)
 
         for i in range(-1, 2, 2):
             organism = self.game.get_organism_at_xy(self.pos_x, self.pos_y + i)
             if organism is not None:
                 if isinstance(organism, Human) and organism.ability_last_time > 0:
+                    continue
+                if isinstance(organism, CyberSheep):
                     continue
                 self.game.remove_organism(organism)
 

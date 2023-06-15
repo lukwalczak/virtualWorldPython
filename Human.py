@@ -17,7 +17,7 @@ class Human(Animal):
         if(self.ability_last_time > 0):
             self.ability_cooldown = 5
             self.ability_last_time -= 1
-        else:
+        elif self.ability_cooldown > 0:
             self.ability_cooldown -= 1
 
         colliding_organism = self.game.get_organism_at_xy(self.pos_x + dx, self.pos_y + dy)
@@ -66,7 +66,7 @@ class Human(Animal):
                 self.alive = False
                 self.add_fight_log(colliding_organism, False)
                 self.game.remove_organism(self)
-            return False
+                return False
 
     def collision(self, colliding_organism):
         if self.fight(colliding_organism):

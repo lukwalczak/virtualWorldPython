@@ -21,7 +21,6 @@ class Animal(Organism):
                 self.game.generate_organism_at_xy((self.pos_x + i), self.pos_y, self.organism_name)
                 return
 
-
     def fight(self, colliding_organism):
         if self.strength >= colliding_organism.strength:
             if colliding_organism.organism_char == 'H':

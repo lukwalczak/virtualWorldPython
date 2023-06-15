@@ -222,9 +222,10 @@ class Game:
         self.human.draw()
 
     def use_ability(self):
-        print("human used ability")
         if self.human.ability_cooldown != 0:
+            print("cooldown = " + str(self.human.ability_cooldown))
             return
+        print("human used ability")
         self.human.ability_last_time = 5
         self.do_turn()
 
