@@ -17,8 +17,6 @@ class Menu(arcade.View):
         self.manager.add(arcade.gui.UIAnchorWidget(anchor_x="center_x", anchor_y="center_y", child=self.v_box))
         arcade.set_background_color(arcade.color.WINE)
         self.draw_menu()
-        self.game_view = GameView(self)
-
 
     def draw_menu(self):
         center_x = self.window.width // 2
@@ -56,7 +54,8 @@ class Menu(arcade.View):
             arcade.exit()
         @new_game_button.event("on_click")
         def on_click_exit_button(event):
-            self.window.show_view(self.game_view)
+            game_view = GameView(self)
+            self.window.show_view(game_view)
         self.v_box.add(new_game_button, center_x=center_x, center_y=center_y + BUTTON_SPACING)
         self.v_box.add(load_game_button, center_x=center_x, center_y=center_y)
         self.v_box.add(settings_button, center_x=center_x, center_y=center_y - BUTTON_SPACING)

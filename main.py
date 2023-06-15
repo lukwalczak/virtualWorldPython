@@ -2,7 +2,7 @@ import arcade
 from Menu import Menu
 
 SCREEN_WIDTH = 1200
-SCREEN_HEIGHT = 800
+SCREEN_HEIGHT = 1000
 SCREEN_TITLE = "193530 Łukasz Walczak"
 
 
