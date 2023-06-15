@@ -2,14 +2,13 @@ import MainGame
 
 
 class Organism:
-    def __init__(self, strength, initiative, pos_x, pos_y, age, organism_char, breed_cooldown, organism_name, game, game_view):
+    def __init__(self, strength, initiative, pos_x, pos_y, age, organism_char, organism_name, game, game_view):
         self.strength = strength
         self.initiative = initiative
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.age = age
         self.organism_char = organism_char
-        self.breed_cooldown = breed_cooldown
         self.organism_name = organism_name
         self.game = game
         self.game_view = game_view
@@ -18,6 +17,10 @@ class Organism:
         self.game_view.change_char_game_point_at_xy(self.pos_x,self.pos_y,self.organism_char)
 
     def check_adjacent_free_spaces(self):
+        for i in range(-1, 2, 2):
+            for j in range(-1, 2, 2):
+                if not self.game.get_organism_at_xy(self.pos_x + i, self.pos_y + j):
+                    return True
         pass
 
     def action(self):

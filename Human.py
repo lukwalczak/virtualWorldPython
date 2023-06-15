@@ -5,7 +5,7 @@ import conf
 class Human(Organism):
     def __init__(self, game, game_view):
         super().__init__(conf.HUMAN_STR, conf.HUMAN_INIT, conf.HUMAN_X, conf.HUMAN_Y,
-                         0, conf.HUMAN_CHAR, 0, conf.HUMAN_NAME, game, game_view)
+                         0, conf.HUMAN_CHAR, conf.HUMAN_NAME, game, game_view)
         self.alive = True
 
     def action(self, dx, dy):
