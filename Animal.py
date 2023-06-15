@@ -11,11 +11,20 @@ class Animal(Organism):
         self.breed_cooldown = conf.BREEDCOOLDOWN
 
     def breed(self):
-        pass
+        for i in range(-1, 2, 2):
+            if self.game.get_organism_at_xy(self.pos_x + i, self.pos_y) is None:
+                self.game.generate_organism_at_xy((self.pos_x + i), self.pos_y, self.organism_name)
+                return
+
+        for i in range(-1, 2, 2):
+            if self.game.get_organism_at_xy(self.pos_x, self.pos_y + i) is None:
+                self.game.generate_organism_at_xy((self.pos_x + i), self.pos_y, self.organism_name)
+                return
+
 
     def fight(self, colliding_organism):
         if self.strength >= colliding_organism.strength:
-            if isinstance(colliding_organism, Human):
+            if colliding_organism.organism_char == 'H':
                 if colliding_organism.ability_last_time > 0:
                     self.add_reflection_log(colliding_organism)
                     return False

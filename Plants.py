@@ -1,6 +1,5 @@
 from Plant import Plant
 import conf
-import random
 from Animal import Animal
 from Human import Human
 
@@ -54,14 +53,14 @@ class Pineborsch(Plant):
         return False
 
     def action(self, dx, dy):
-        for i in range(-1,2,2):
+        for i in range(-1, 2, 2):
             organism = self.game.get_organism_at_xy(self.pos_x + i, self.pos_y)
             if organism is not None:
                 if isinstance(organism, Human) and organism.ability_last_time > 0:
                     continue
                 self.game.remove_organism(organism)
 
-        for i in range(-1,2,2):
+        for i in range(-1, 2, 2):
             organism = self.game.get_organism_at_xy(self.pos_x, self.pos_y + i)
             if organism is not None:
                 if isinstance(organism, Human) and organism.ability_last_time > 0:

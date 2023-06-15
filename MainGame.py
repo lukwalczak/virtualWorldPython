@@ -1,9 +1,11 @@
 import arcade
 import arcade.gui
-from Organism import Organism
-from Human import Human
-from Animal import Animal
 
+import conf
+from Human import Human
+import random
+import OrganismFactory
+import json
 BUTTON_WIDTH = 250
 BUTTON_HEIGHT = 40
 BUTTON_SPACING = 60
@@ -149,6 +151,12 @@ class GameView(arcade.View):
             self.game.move_human(0, 1)
         elif symbol == arcade.key.DOWN:
             self.game.move_human(0, -1)
+        elif symbol == arcade.key.S:
+            self.game.save_game()
+        elif symbol == arcade.key.L:
+            self.game.load_game()
+        elif symbol == arcade.key.P:
+            self.game.use_ability()
 
 
 class GamePoint(arcade.gui.UIFlatButton):
@@ -178,41 +186,73 @@ class Game:
         self.height = height
         self.game_view = game_view
         self.organisms = []
-        self.human = Human(self, self.game_view)
+        self.human = Human(self, self.game_view, conf.HUMAN_X, conf.HUMAN_Y)
         self.organisms.append(self.human)
         self.generate_organisms()
-        self.do_first_half_turn()
-        sheep = Animal(20, 1, 5, 5, 0, 'S', "Sheep", self, self.game_view)
-        self.organisms.append(sheep)
+        #self.do_first_half_turn()
 
     def generate_organisms(self):
-        pass
+        self.generate_organism("SHEEP")
+        self.generate_organism("WOLF")
+        self.generate_organism("FOX")
+        self.generate_organism("ANTELOPE")
+        self.generate_organism("TURTLE")
+        self.generate_organism("CYBERSHEEP")
+        self.generate_organism("GRASS")
+        self.generate_organism("DANDELION")
+        self.generate_organism("NIGHTSHADE")
+        self.generate_organism("PINEBORSCH")
+        self.generate_organism("GUARANA")
+
+    def generate_organism(self, name):
+        for i in range(0, 3):
+            x = random.randint(0, self.width-1)
+            y = random.randint(0, self.width - 1)
+            while self.get_organism_at_xy(x, y) is not None:
+                x = random.randint(0, self.width - 1)
+                y = random.randint(0, self.width - 1)
+            OrganismFactory.createOrganism(name, x, y, self, self.game_view)
+
+    def generate_organism_at_xy(self, x, y, name):
+        OrganismFactory.createOrganism(name, x, y, self, self.game_view)
 
     def draw_organisms(self):
         for o in self.organisms:
             o.draw()
         self.human.draw()
 
+    def use_ability(self):
+        print("human used ability")
+        if self.human.ability_cooldown != 0:
+            return
+        self.human.ability_last_time = 5
+        self.do_turn()
+
+
     def move_human(self, dx, dy):
         self.is_human_alive()
         self.human.action(dx, dy)
+        self.do_turn()
+
+    def do_turn(self):
         self.is_human_alive()
         self.do_second_half_turn()
         self.sort_organisms()
         self.do_first_half_turn()
+        self.sort_organisms()
 
     def sort_organisms(self):
-        pass
+        self.organisms.sort(key=lambda x: (x.initiative, -x.age), reverse=True)
 
     def is_organism_at_xy(self, x, y):
         for o in self.organisms:
-            if o.pos_x == x and o.pos_y == y:
+            if o is not None and o.pos_x == x and o.pos_y == y:
                 return True
         return False
 
     def get_organism_at_xy(self, x, y):
         for o in self.organisms:
-            if o.pos_x == x and o.pos_y == y:
+            if o is not None and o.pos_x == x and o.pos_y == y:
                 return o
         return None
 
@@ -240,3 +280,28 @@ class Game:
         if not self.human.alive:
             death_view = DeathView(self.game_view.menu_view)
             self.game_view.window.show_view(death_view)
+
+    def save_game(self):
+        print("saved")
+        organisms_to_save = []
+        for o in self.organisms:
+            organisms_to_save.append({"organism_name":o.organism_name,"pos_x":o.pos_x,"pos_y":o.pos_y})
+        save_game = {"game_width":self.width,"game_height":self.height,"organisms":organisms_to_save}
+        with open("saved_game.json", "w") as f:
+            json.dump(save_game,f)
+
+    def load_game(self):
+        self.game_view.manager.disable()
+        self.organisms.clear()
+        f = open('saved_game.json')
+        data = json.load(f)
+        self.width = data["game_width"]
+        self.height = data["game_height"]
+        for i in data["organisms"]:
+            if i["organism_name"] == "HUMAN":
+                self.human.pos_y = i["pos_y"]
+                self.human.pos_x = i["pos_x"]
+            self.generate_organism_at_xy(i["pos_x"],i["pos_y"],i["organism_name"])
+
+        self.game_view.manager.enable()
+

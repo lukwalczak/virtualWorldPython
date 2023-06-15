@@ -1,12 +1,11 @@
-from Organism import Organism
 import conf
 from Animal import Animal
 from Plant import Plant
 
 
 class Human(Animal):
-    def __init__(self, game, game_view):
-        super().__init__(conf.HUMAN_STR, conf.HUMAN_INIT, conf.HUMAN_X, conf.HUMAN_Y,
+    def __init__(self, game, game_view, pos_x, pos_y):
+        super().__init__(conf.HUMAN_STR, conf.HUMAN_INIT, pos_x, pos_y,
                          0, conf.HUMAN_CHAR, conf.HUMAN_NAME, game, game_view)
         self.alive = True
         self.ability_last_time = 0
@@ -15,6 +14,12 @@ class Human(Animal):
     def action(self, dx, dy):
         if not self.alive:
             return
+        if(self.ability_last_time > 0):
+            self.ability_cooldown = 5
+            self.ability_last_time -= 1
+        else:
+            self.ability_cooldown -= 1
+
         colliding_organism = self.game.get_organism_at_xy(self.pos_x + dx, self.pos_y + dy)
         print(colliding_organism)
         if dx != 0 and 0 <= self.pos_x + dx < self.game.width:

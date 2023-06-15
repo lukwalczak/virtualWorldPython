@@ -7,7 +7,7 @@ SCREEN_TITLE = "193530 Łukasz Walczak"
 
 
 def main():
-    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE,resizable=True)
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE, resizable=True)
     arcade.set_window(window)
     main_view = Menu()
     window.show_view(main_view)

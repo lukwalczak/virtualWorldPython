@@ -31,8 +31,8 @@ class Organism:
 
     def check_move(self, dx, dy):
         if (self.game.get_organism_at_xy(self.pos_x + dx, self.pos_y + dy) is None and
-                0 < self.pos_y + dy < self.game.height - 1 and
-                0 < self.pos_x + dx < self.game.width-1):
+                0 <= self.pos_y + dy < self.game.height - 1 and
+                0 <= self.pos_x + dx < self.game.width-1):
             return True
         else:
             return False
