@@ -15,7 +15,7 @@ class Menu(arcade.View):
         self.manager.enable()
         self.v_box = arcade.gui.UIBoxLayout(space_between=BUTTON_OFFSET)
         self.manager.add(arcade.gui.UIAnchorWidget(anchor_x="center_x", anchor_y="center_y", child=self.v_box))
-        arcade.set_background_color(arcade.color.WINE)
+        arcade.set_background_color((219, 108, 121))
         self.draw_menu()
 
     def draw_menu(self):
