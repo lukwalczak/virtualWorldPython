@@ -111,15 +111,19 @@ class Animal(Organism):
 
     def add_move_log(self, dx, dy):
         log = self.organism_name + " moved to " + (self.pos_x+dx) + " " + (self.pos_y+dy)
+        self.game.add_log(log)
 
     def add_fight_log(self, colliding_organism, won):
         if won:
             log = self.organism_name + " killed " + colliding_organism.organism_name
         else:
             log = self.organism_name + " was killed by " + colliding_organism.organism_name
+        self.game.add_log(log)
 
     def add_breed_log(self):
         log = self.organism_name + " has been born"
+        self.game.add_log(log)
 
     def add_reflection_log(self, colliding_organism):
         log = colliding_organism.organism_name + " reflected " + self.organism_name + " attack"
+        self.game.add_log(log)

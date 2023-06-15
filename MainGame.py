@@ -79,7 +79,7 @@ class GameView(arcade.View):
     def setup_buttons(self):
         for y in range(self.game_height):
             for x in range(self.game_width):
-                self.game_points.append(GamePoint(300 + 40 * x, 100 + 40 * y, "", GAME_POINT_WIDTH, GAME_POINT_HEIGHT, 0, 0))
+                self.game_points.append(GamePoint(340 + 40 * x, 100 + 40 * y, "", GAME_POINT_WIDTH, GAME_POINT_HEIGHT, 0, 0))
         exit_to_main_menu_button = arcade.gui.UIFlatButton(
             text="Exit to main menu",
             width=BUTTON_WIDTH,
@@ -103,6 +103,14 @@ class GameView(arcade.View):
         @start_game_button.event("on_click")
         def on_click_exit_button(event):
             self.setup_game()
+
+        @exit_to_main_menu_button.event("on_click")
+        def on_click_exit_button(event):
+            self.window.show_view(self.menu_view)
+
+        @load_game_button.event("on_click")
+        def on_click_load_game(event):
+            self.game.load_game()
         self.options_grid.add(start_game_button)
         self.options_grid.add(load_game_button)
         self.options_grid.add(exit_to_main_menu_button)
@@ -122,6 +130,7 @@ class GameView(arcade.View):
         self.manager.draw()
         self.clear_organisms()
         self.game.draw_organisms()
+        self.game.draw_logs()
 
     def update(self, delta_time):
         for p in self.game_points:
@@ -185,11 +194,13 @@ class Game:
         self.width = width
         self.height = height
         self.game_view = game_view
+        self.logs = [] * 30
+        self.logs.append("test log")
         self.organisms = []
         self.human = Human(self, self.game_view, conf.HUMAN_X, conf.HUMAN_Y)
         self.organisms.append(self.human)
         self.generate_organisms()
-        #self.do_first_half_turn()
+        self.do_first_half_turn()
 
     def generate_organisms(self):
         self.generate_organism("SHEEP")
@@ -305,4 +316,16 @@ class Game:
             self.generate_organism_at_xy(i["pos_x"],i["pos_y"],i["organism_name"])
 
         self.game_view.manager.enable()
+
+    def draw_logs(self):
+        for i, log in enumerate(self.logs):
+            arcade.draw_text(log, 10, SCREEN_HEIGHT - i * 12,
+                             arcade.color.BLACK, 10, multiline=False, width=100)
+
+    def add_log(self, log):
+        if len(self.logs) < 30:
+            self.logs.insert(0, log)
+        else:
+            self.logs.pop(len(self.logs)-1)
+            self.logs.insert(0, log)
 
