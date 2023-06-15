@@ -78,7 +78,18 @@ class NewGameButton(arcade.gui.UIFlatButton):
 
 
 class SettingsView(arcade.View):
-    def __init__(self):
+    def __init__(self, menu_view):
         super().__init__()
+        self.manager = arcade.gui.UIManager()
+        self.manager.enable()
 
 
+    def on_draw(self):
+        self.clear()
+        self.manager.draw()
+
+    def on_hide_view(self):
+        self.manager.disable()
+
+    def on_show_view(self):
+        self.manager.enable()

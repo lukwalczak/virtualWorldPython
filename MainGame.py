@@ -11,6 +11,8 @@ BUTTON_OFFSET = 20
 GAME_POINT_COLOR = (222, 185, 134)
 GAME_POINT_WIDTH = 35
 GAME_POINT_HEIGHT = 35
+SCREEN_WIDTH = 1200
+SCREEN_HEIGHT = 1000
 
 default_game_point_style = {
             "font_name": ("calibri", "arial"),
@@ -29,9 +31,30 @@ default_game_point_style = {
 class DeathView(arcade.View):
     def __init__(self, menu_view):
         super().__init__()
-        arcade.exit()
         self.manager = arcade.gui.UIManager()
+        arcade.set_background_color((219, 108, 121))
+        self.manager.enable()
+        self.menu_view = menu_view
+        menu_button = arcade.gui.UIFlatButton(
+            text="Exit to main menu",
+            width=BUTTON_WIDTH,
+            height=BUTTON_HEIGHT,
+        )
+        self.manager.add(arcade.gui.UIAnchorWidget(anchor_x="center_x", anchor_y="center_y", child=menu_button))
 
+        @menu_button.event("on_click")
+        def on_click_exit_button(event):
+            self.window.show_view(self.menu_view)
+
+    def on_draw(self):
+        self.clear()
+        self.manager.draw()
+
+    def on_hide_view(self):
+        self.manager.disable()
+
+    def on_show_view(self):
+        self.manager.enable()
 
 
 class GameView(arcade.View):
@@ -159,7 +182,7 @@ class Game:
         self.organisms.append(self.human)
         self.generate_organisms()
         self.do_first_half_turn()
-        sheep = Animal(2, 1, 5, 5, 0, 'S', "Sheep", self, self.game_view)
+        sheep = Animal(20, 1, 5, 5, 0, 'S', "Sheep", self, self.game_view)
         self.organisms.append(sheep)
 
     def generate_organisms(self):
@@ -198,16 +221,14 @@ class Game:
             if isinstance(o, Human):
                 continue
             if o.initiative > self.human.initiative or (o.initiative == self.human.initiative and o.age >= self.human.age):
-                continue
-                #o.action(0, 0)
+                o.action(0, 0)
 
     def do_second_half_turn(self):
         for o in self.organisms:
             if isinstance(o, Human):
                 continue
             if o.initiative <= self.human.initiative:
-                continue
-                #o.action(0, 0)
+                o.action(0, 0)
 
     def remove_organism(self, organism):
         for o in self.organisms:
